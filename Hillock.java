@@ -65,6 +65,7 @@ public class Hillock
         yCoords = new int[ numPixels ];
         marked = new int[ numPixels ];
 
+        // initialize neighbors[i][j] = -1
         neighbors = new int[ numPixels ][ MAX_NUM_NEIGHBORS ];
         for ( int i = 0; i < numPixels; i++ )
             for ( int j = 0; j < MAX_NUM_NEIGHBORS; j++ )

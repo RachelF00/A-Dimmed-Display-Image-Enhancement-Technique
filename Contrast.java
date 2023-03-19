@@ -4,6 +4,9 @@
  * Last update: 07/11/08
  */
 
+import java.util.Arrays;
+import java.util.stream.Collectors;
+
 // Main class
 public class Contrast
 {
@@ -11,8 +14,8 @@ public class Contrast
     public static final short MAX_PIXEL_VALUE = 255;
     public static final short MIN_PIXEL_VALUE = 0;
 
-    private static final String INPUT_FILE_NAME = "input.jpg";
-    private static final String OUTPUT_FILE_NAME = "output.jpg";
+    private static final String INPUT_FILE_NAME = "input_snow.jpg";
+    private static final String OUTPUT_FILE_NAME = "output_snow.jpg";
     private static final String DELTA_STRING = "3";
 
     // Main method
@@ -47,6 +50,9 @@ public class Contrast
         boolean[][] criticalMap;
         double[][] LumImage;
         double[][] MaxLumMap;
+        double sum_Lum_prev = 0.0;
+        double sum_Lum_first_iteration = 0.0;
+        double sum_Lum_final = 0.0;
 
         System.gc();
         System.out.println("Reading input file.");
@@ -61,9 +67,11 @@ public class Contrast
 
         // Generates the Luminance Image from the Lxy Image
         LumImage = imageData[0];
+        sum_Lum_prev = Arrays.stream(LumImage)
+                .collect(Collectors.summarizingDouble(i -> Arrays.stream(i).sum())).getSum();
         
         // translate entire image downwards so that minimum pixel value is 0
-        LumImage = ImageUtilities.shifttozero(LumImage);
+        ImageUtilities.shifttozero(LumImage);
 
         // Generates the MaxLuminance Map (essentially instead of a single limiting maximum, each pixel
         // now have a different maximum limit)
@@ -79,18 +87,32 @@ public class Contrast
         // This is the primary method call.
         // Given a two dimensional array, max and min values, as well as delta,
         // this will return a new image with contrast enhanced.
-        LumImage = ContrastEnhancer.enhance( LumImage, criticalMap, MaxLumMap, 0.0, delta );
- 
+        ContrastEnhancer.enhance(LumImage, criticalMap, MaxLumMap, 0.0, delta);
+
+        sum_Lum_first_iteration = Arrays.stream(LumImage)
+                .collect(Collectors.summarizingDouble(i -> Arrays.stream(i).sum())).getSum();
+
+        double factor = sum_Lum_prev / sum_Lum_first_iteration;
+
+        LumImage = Arrays.stream(LumImage)
+                .map(i -> Arrays.stream(i).map(j -> j *= factor).toArray())
+                .toArray(double[][]::new);
+
+        sum_Lum_final = Arrays.stream(LumImage)
+                .collect(Collectors.summarizingDouble(i -> Arrays.stream(i).sum())).getSum();
+
+        System.out.println("Lum before: " + sum_Lum_prev + "\nLum after: " + sum_Lum_final);
+
         //Invert the image
-        ImageUtilities.invertImage( LumImage, MaxLumMap, 0.0);
-
-        //Run again for inverted image
-        System.out.println("Starting second pass.");
-        criticalMap = ImageUtilities.makeCriticalMap( LumImage);
-        LumImage = ContrastEnhancer.enhance( LumImage, criticalMap, MaxLumMap, 0.0, delta );
-
-        //Invert the image back
-        ImageUtilities.invertImage( LumImage, MaxLumMap, 0.0 );
+//        ImageUtilities.invertImage( LumImage, MaxLumMap, 0.0);
+//
+//        //Run again for inverted image
+//        System.out.println("Starting second pass.");
+//        criticalMap = ImageUtilities.makeCriticalMap( LumImage);
+//        LumImage = ContrastEnhancer.enhance( LumImage, criticalMap, MaxLumMap, 0.0, delta );
+//
+//        //Invert the image back
+//        ImageUtilities.invertImage( LumImage, MaxLumMap, 0.0 );
 
         //Converts Lxy back to RGB
         outputData = MyImageReader.convertLxytoRGB(imageData, dimimage[0], dimimage[1], dimimage[2]);
