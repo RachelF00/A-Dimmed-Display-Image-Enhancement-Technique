@@ -14,8 +14,8 @@ public class Contrast
     public static final short MAX_PIXEL_VALUE = 255;
     public static final short MIN_PIXEL_VALUE = 0;
 
-    private static final String INPUT_FILE_NAME = "input_snow.jpg";
-    private static final String OUTPUT_FILE_NAME = "output_snow.jpg";
+    private static final String INPUT_FILE_NAME = "input_lamp.jpg";
+    private static final String OUTPUT_FILE_NAME = "output_lamp.jpg";
     private static final String DELTA_STRING = "3";
 
     // Main method
@@ -67,8 +67,14 @@ public class Contrast
 
         // Generates the Luminance Image from the Lxy Image
         LumImage = imageData[0];
-        sum_Lum_prev = Arrays.stream(LumImage)
-                .collect(Collectors.summarizingDouble(i -> Arrays.stream(i).sum())).getSum();
+//        sum_Lum_prev = Arrays.stream(LumImage)
+//                .collect(Collectors.summarizingDouble(i -> Arrays.stream(i).sum())).getSum();
+
+        for (int i = 0; i < LumImage.length; ++i) {
+            for (int j = 0; j < LumImage[0].length; ++j) {
+                sum_Lum_prev += LumImage[i][j];
+            }
+        }
         
         // translate entire image downwards so that minimum pixel value is 0
         ImageUtilities.shifttozero(LumImage);
@@ -89,17 +95,33 @@ public class Contrast
         // this will return a new image with contrast enhanced.
         ContrastEnhancer.enhance(LumImage, criticalMap, MaxLumMap, 0.0, delta);
 
-        sum_Lum_first_iteration = Arrays.stream(LumImage)
-                .collect(Collectors.summarizingDouble(i -> Arrays.stream(i).sum())).getSum();
+//        sum_Lum_first_iteration = Arrays.stream(LumImage)
+//                .collect(Collectors.summarizingDouble(i -> Arrays.stream(i).sum())).getSum();
+
+        for (int i = 0; i < LumImage.length; ++i) {
+            for (int j = 0; j < LumImage[0].length; ++j) {
+                sum_Lum_first_iteration += LumImage[i][j];
+            }
+        }
 
         double factor = sum_Lum_prev / sum_Lum_first_iteration;
 
-        LumImage = Arrays.stream(LumImage)
-                .map(i -> Arrays.stream(i).map(j -> j *= factor).toArray())
-                .toArray(double[][]::new);
+//        LumImage = Arrays.stream(LumImage)
+//                .map(i -> Arrays.stream(i).map(j -> j *= factor).toArray())
+//                .toArray(double[][]::new);
+        for (int i = 0; i < LumImage.length; ++i) {
+            for (int j = 0; j < LumImage[0].length; ++j) {
+                LumImage[i][j] *= factor;
+            }
+        }
 
-        sum_Lum_final = Arrays.stream(LumImage)
-                .collect(Collectors.summarizingDouble(i -> Arrays.stream(i).sum())).getSum();
+//        sum_Lum_final = Arrays.stream(LumImage)
+//                .collect(Collectors.summarizingDouble(i -> Arrays.stream(i).sum())).getSum();
+        for (int i = 0; i < LumImage.length; ++i) {
+            for (int j = 0; j < LumImage[0].length; ++j) {
+                sum_Lum_final += LumImage[i][j];
+            }
+        }
 
         System.out.println("Lum before: " + sum_Lum_prev + "\nLum after: " + sum_Lum_final);
 
