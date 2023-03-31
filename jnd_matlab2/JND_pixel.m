@@ -36,15 +36,15 @@ end
 I=double(I);
 [H,W]=size(I);
 
-f = max(1,round(min(H,W)/256))
-
-if(f>1)
-    lpf = ones(f,f);
-    lpf = lpf/sum(lpf(:));
-    I= imfilter(I,lpf,'symmetric','same');
-    I=I(1:f:end,1:f:end);
-
-end
+% f = max(1,round(min(H,W)/256))
+% 
+% if(f>1)
+%     lpf = ones(f,f);
+%     lpf = lpf/sum(lpf(:));
+%     I= imfilter(I,lpf,'symmetric','same');
+%     I=I(1:f:end,1:f:end);
+% 
+% end
 
 JNDl=zeros(H,W); % JND: Luminance component
 JNDt=zeros(H,W); % JND: Texture component
