@@ -1,8 +1,9 @@
 EECE 541: Improving Image Visual Quality on a Dimmed Display
 Kevin Jin, Rui Fang, Akhil Rajavaram, Hanxin Feng
 
-The code is developed primarily in MATLAB (R2022b) and calls a Java-based executable. We also use MATLAB's Image Processing Toolbox.
+The code is developed primarily in MATLAB (R2022b) and calls a Java class (from within MATLAB). We also use MATLAB's Image Processing Toolbox.
 Development was done on a Windows 10 device.
+Java can be installed from: https://www.java.com/en/download/
 
 Method1_HumanContrastSensitivity contains the code for the human contrast sensitivity-based image enhancement method. 
 Method2_IntensitySaturation contains the code for the intensity saturation-based image enhancement method.

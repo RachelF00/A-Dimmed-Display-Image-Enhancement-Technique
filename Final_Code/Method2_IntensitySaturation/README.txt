@@ -3,6 +3,7 @@ Run main.mlx.
 This folder contains the intensity saturation image enhancement method based on MATLAB's imadjust function to enhance our images. 
 We then apply a JND-based brightness reduction to constrain the output image brightness. 
 The JND pixel-level thresholds were computed using code from: https://github.com/scienstanford/iqmetrics/tree/master/utility
+A troublesome section of the code that caused issues for high-resolution images has been commented out.
 
 The input folder contains the reference images.
 The tmp folder stores an intermediate result, which is cleared afterwards.
