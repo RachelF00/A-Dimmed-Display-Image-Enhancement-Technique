@@ -1,0 +1,1 @@
+This is a temporary directory containing the Java output. We clear this folder when finished.
