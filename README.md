@@ -1,1 +1,1 @@
-# EECE541Display
+# A Dimmed Display Image Enhancement Technique
